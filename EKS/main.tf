@@ -7,7 +7,10 @@ resource "aws_eks_cluster" "mycluster" {
   }
 }
 
+resource "null_resource" "kubectl" {
+  provisioner "local-exec" {
+    command = "aws eks --region us-east-1 update-kubeconfig --name ${aws_eks_cluster.mycluster.name}"
+  }
 
-# output "kubeconfig-certificate-authority-data" {
-#   value = aws_eks_cluster.example.certificate_authority[0].data
-# }
+  depends_on = [ aws_eks_cluster.mycluster ]
+}
