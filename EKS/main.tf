@@ -7,6 +7,23 @@ resource "aws_eks_cluster" "mycluster" {
   }
 }
 
+resource "aws_eks_node_group" "example" {
+  cluster_name    = aws_eks_cluster.mycluster.name
+  node_group_name = "demo-node"
+  node_role_arn   = var.node_role_arn
+  subnet_ids      = var.node_subnet_ids
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 2
+    min_size     = 1
+  }
+
+  update_config {
+    max_unavailable = 1
+  }
+}
+
 resource "null_resource" "kubectl" {
   provisioner "local-exec" {
     command = "aws eks --region us-east-1 update-kubeconfig --name ${aws_eks_cluster.mycluster.name}"
@@ -14,3 +31,4 @@ resource "null_resource" "kubectl" {
 
   depends_on = [ aws_eks_cluster.mycluster ]
 }
+

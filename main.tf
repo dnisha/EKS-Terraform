@@ -14,4 +14,6 @@ module "EKS" {
   source               = "./EKS"
   controlPlane_subnet_ids = module.Networking.public_subnet_ids
   controlPlane_role_arn = module.Role.eks_cluster_role_arn
+  node_subnet_ids = module.Networking.private_subnet_ids
+  node_role_arn = module.Role.eks_node_role_arn
 }
